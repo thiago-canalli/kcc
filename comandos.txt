@@ -1,0 +1,22 @@
+git com config docker compose
+https://github.com/confluentinc/cp-docker-images/blob/5.3.3-post/examples/kafka-cluster/docker-compose.yml
+
+Entrar no container docker 
+docker exec -it kcc-kafka-1-1 bash 
+
+Criar topico no kafka
+kafka-topics --create --bootstrap-server localhost:29092 --replication-factor 3 --partitions 3 --topic meutopico
+
+
+Listar topicos
+ kafka-topics --list --bootstrap-server localhost:29092
+
+
+produzir mensagem
+kafka-console-producer --broker-list localhost:29092 --topic meutopico
+
+consumir topico
+kafka-console-consumer --bootstrap-server localhost:29092 --topic meutopico
+
+Consumir a fila toda mesmo com intens consumidos 
+kafka-console-consumer --bootstrap-server localhost:29092 --topic meutopico --from-beginning
