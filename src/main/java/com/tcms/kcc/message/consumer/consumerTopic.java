@@ -1,22 +1,27 @@
 package com.tcms.kcc.message.consumer;
 
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.event.EventListener;
 import org.springframework.kafka.annotation.KafkaListener;
+import org.springframework.kafka.config.KafkaListenerEndpointRegistry;
+import org.springframework.kafka.event.ListenerContainerIdleEvent;
 import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Service;
+
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequiredArgsConstructor
 @Component
 public class consumerTopic {
 
+    private final KafkaListenerEndpointRegistry registry;
+
     @Value("${topic.name.consumer")
     private String topicName;
 
-    @KafkaListener(topics = "${topic.name.consumer}", groupId = "group_id")
+    @KafkaListener(id="process",topics = "${topic.name.consumer}", groupId = "group_id")
     public void consume(ConsumerRecord<String, String> payload){
         log.info("Tópico: {}", topicName);
         log.info("key: {}", payload.key());
@@ -24,6 +29,11 @@ public class consumerTopic {
         log.info("Partion: {}", payload.partition());
         log.info("Order: {}", payload.value());
 
+    }
+
+    @EventListener(condition = "event.listenerId.startsWith('process')")
+    public void idleEventHandler(ListenerContainerIdleEvent event){
+        registry.stop();
     }
 
 }
