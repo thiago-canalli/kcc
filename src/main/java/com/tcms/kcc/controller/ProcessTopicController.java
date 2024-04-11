@@ -26,12 +26,12 @@ public class ProcessTopicController {
 
         if (value.equals("start")) {
             log.info("Starting processing consumer");
-            this.registry.getListenerContainer("process").start();
+            this.registry.getListenerContainer("consumer1").start();
 
         }
 
         if (value.equals("stop")) {
-            this.registry.getListenerContainer("process").stop();
+            this.registry.getListenerContainer("consumer1").stop();
             log.info("Stopping processing consumer");
         }
     }
